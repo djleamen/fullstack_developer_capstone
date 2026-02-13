@@ -131,3 +131,7 @@ dmypy.json
 
 loginuser
 logoutuser,
+getalldealers
+getdealerreviews
+getdealerbyid
+getdealersbyState
