@@ -7,6 +7,12 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const port = 3030;
 
+// Rate limiter for fetching a single dealer by ID
+const fetchDealerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs for this endpoint
+});
+
 app.use(cors());
 app.use(require('body-parser').urlencoded({ extended: false }));
 
@@ -92,7 +98,7 @@ app.get('/fetchDealers/:state', fetchDealersLimiter, async (req, res) => {
 });
 
 // Express route to fetch dealer by a particular id
-app.get('/fetchDealer/:id', async (req, res) => {
+app.get('/fetchDealer/:id', fetchDealerLimiter, async (req, res) => {
   try {
     const documents = await Dealerships.find({id: req.params.id});
     res.json(documents);
