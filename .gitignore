@@ -139,3 +139,4 @@ getallcarmakes
 analyzereview
 CICD
 deploymentURL
+.DS_Store
