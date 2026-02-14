@@ -22,6 +22,13 @@ const reviewLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const fetchDealersLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // limit each IP to 200 requests per windowMs for fetching dealers
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 const Reviews = require('./review');
 
 const Dealerships = require('./dealership');
@@ -75,7 +82,7 @@ app.get('/fetchDealers', async (req, res) => {
 });
 
 // Express route to fetch Dealers by a particular state
-app.get('/fetchDealers/:state', async (req, res) => {
+app.get('/fetchDealers/:state', fetchDealersLimiter, async (req, res) => {
   try {
     const documents = await Dealerships.find({state: req.params.state});
     res.json(documents);
